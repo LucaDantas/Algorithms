@@ -1,2 +1,5 @@
 # Algorithms
-Common algorithms inside Competitive Programming
+
+|Data Structures|
+|---------------|
+|[Binary Indexed Tree](Data_Structures/BIT.cpp)|
