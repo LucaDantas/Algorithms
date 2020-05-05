@@ -16,11 +16,11 @@ matrix operator *(matrix a, matrix b){
 		for(int j = 0; j < m; j++){ //multiply by every column in b
 			for(int k = 0; k < n; k++) 
 				col[k] = b[k][j];
-			ll s = 0;
+			ll sum = 0;
 			for(int k = 0; k < n; k++) //for every item in row i of a, multiply by every item in column j of b
-				s = ((s + (a[i][k]*col[k])%MOD)%MOD + MOD)%MOD; //maybe too careful
-				//s = (s + (a[i][k]*col[k])%MOD)%MOD;
-			c[i][j] = s;
+				sum = ((sum + (a[i][k]*col[k])%MOD)%MOD + MOD)%MOD; //maybe too careful
+				//sum = (sum + (a[i][k]*col[k])%MOD)%MOD;
+			c[i][j] = sum;
 		}
 	}
 	return c;
@@ -59,10 +59,10 @@ matrix operator -(matrix a, matrix b){
 		//for(int j = 0; j < m; j++) //multiply by every column in b
 			//col[k] = b[k][j];
 		//for(int j = 0; j < m; j++){
-			//ll s = 0;
+			//ll sum = 0;
 			//for(int k = 0; k < n; k++) //for every item in row i of a, multiply by every item in column j of b
-				//s += a[i][k]*col[k];
-			//c[i][j] = s;
+				//sum += a[i][k]*col[k];
+			//c[i][j] = sum;
 		//}
 	//}
 	//return c;
