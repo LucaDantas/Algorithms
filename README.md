@@ -7,3 +7,7 @@
 |Graph theory|
 |---------------|
 |[Dijkstra](Graph/dijkstra.cpp)|
+
+|Math|
+|---------------|
+|[Matrix Operations](Math/matrix.cpp)|
