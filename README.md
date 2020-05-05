@@ -11,3 +11,5 @@
 |Math|
 |---------------|
 |[Matrix Operations](Math/matrix.cpp)|
+|[Modular arithmetic](Math/modular_arithmetic.cpp)|
+|[Binary exponentiation](Math/bin_expo.cpp)|
