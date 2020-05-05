@@ -4,20 +4,21 @@ using namespace std;
 typedef long long ll;
 typedef vector<vector<ll> > matrix;
 
-const int MOD = 1e9 + 100;
+const int MOD = 1e9 + 7;
 
 //With mod
 matrix operator *(matrix a, matrix b){
-	int n = (int)a.size(); //rows of a
-	int m = (int)(b[0].size()); //columns of b
-	matrix c(n, vector<ll>(m));
+	int n = (int)a.size(); //# rows of a
+	int m = (int)b.size(); //# items in each row of a / column of b
+	int p = (int)b[0].size(); //# columns of b
+	matrix c(n, vector<ll>(p));
 	vector<ll> col(m);
-	for(int i = 0; i < n; i++){ //for every row of a
-		for(int j = 0; j < m; j++){ //multiply by every column in b
-			for(int k = 0; k < n; k++) 
-				col[k] = b[k][j];
+	for(int j = 0; j < p; j++){ //for every column of b
+		for(int k = 0; k < m; k++) 
+			col[k] = b[k][j];
+		for(int i = 0; i < n; i++){ //multiply by every row in a
 			ll sum = 0;
-			for(int k = 0; k < n; k++) //for every item in row i of a, multiply by every item in column j of b
+			for(int k = 0; k < m; k++) //for every item in row i of a, multiply by every item in column j of b
 				sum = ((sum + (a[i][k]*col[k])%MOD)%MOD + MOD)%MOD; //maybe too careful
 				//sum = (sum + (a[i][k]*col[k])%MOD)%MOD;
 			c[i][j] = sum;
@@ -50,17 +51,18 @@ matrix operator -(matrix a, matrix b){
 }
 
 //Without mod
-//matrix operator*(matrix a, matrix b){
-	//int n = (int)a.size(); //rows of a
-	//int m = (int)(b[0].size()); //columns of b
-	//matrix c(n, vector<ll>(m));
+//matrix operator *(matrix a, matrix b){
+	//int n = (int)a.size(); //# rows of a
+	//int m = (int)b.size(); //# items in each row of a / column of b
+	//int p = (int)b[0].size(); //# columns of b
+	//matrix c(n, vector<ll>(p));
 	//vector<ll> col(m);
-	//for(int i = 0; i < n; i++){ //for every row of a
-		//for(int j = 0; j < m; j++) //multiply by every column in b
+	//for(int j = 0; j < p; j++){ //for every column of b
+		//for(int k = 0; k < m; k++) 
 			//col[k] = b[k][j];
-		//for(int j = 0; j < m; j++){
+		//for(int i = 0; i < n; i++){ //multiply by every column in b
 			//ll sum = 0;
-			//for(int k = 0; k < n; k++) //for every item in row i of a, multiply by every item in column j of b
+			//for(int k = 0; k < m; k++) //for every item in row i of a, multiply by every item in column j of b
 				//sum += a[i][k]*col[k];
 			//c[i][j] = sum;
 		//}
@@ -88,7 +90,7 @@ matrix pow(matrix A, ll p){
 }
 
 //int main(){
-	//matrix a = {{1, 5},{5,2}}, b = {{13, 45},{99,7}};
+	//matrix a = {{1, 5, 5},{2, 3, 8}}, b = {{13}, {45}, {44}};
 	//for(auto i : a+b){
 		//for(auto j : i)
 			//cout << j << ' ';
