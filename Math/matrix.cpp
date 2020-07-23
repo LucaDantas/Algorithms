@@ -1,124 +1,177 @@
-#include <bits/stdc++.h>
-using namespace std;
+/*
+	Matrix operations:
+	This contains an optimized version for matrix exponentiation (fixed size square matrices)
 
-typedef long long ll;
-typedef vector<vector<ll> > matrix;
+	Also a version with more functionalities for general purpose
+*/
 
-const int MOD = 1e9 + 7;
+// Matrix Exponentiation optimized
 
-//With mod
-matrix operator *(matrix a, matrix b){
-	int n = (int)a.size(); //# rows of a
-	int m = (int)b.size(); //# items in each row of a / column of b
-	int p = (int)b[0].size(); //# columns of b
-	matrix c(n, vector<ll>(p));
-	vector<ll> col(m);
-	for(int j = 0; j < p; j++){ //for every column of b
-		for(int k = 0; k < m; k++) 
-			col[k] = b[k][j];
-		for(int i = 0; i < n; i++){ //multiply by every row in a
-			ll sum = 0;
-			for(int k = 0; k < m; k++) //for every item in row i of a, multiply by every item in column j of b
-				sum = ((sum + (a[i][k]*col[k])%MOD)%MOD + MOD)%MOD; //maybe too careful
-				//sum = (sum + (a[i][k]*col[k])%MOD)%MOD;
-			c[i][j] = sum;
+constexpr int mod = 1000000007;
+
+int mul(int a, int b) {
+	return (int)(1ll * a * b % mod);
+}
+
+void add_self(int& a, int b) {
+	a += b;
+	if(a >= mod) a -= mod;
+}
+
+struct Matrix
+{
+	vector<vector<int>> mat;
+
+	Matrix(int n) : mat(n, vector<int>(n)) {}
+
+	Matrix() {}
+
+	Matrix& operator*(const Matrix& a) {
+		int n = sz(mat);
+
+		static Matrix c;
+		c.mat.assign(n, vector<int>(n));
+		
+		for(int i = 0; i < n; i++)
+			for(int j = 0; j < n; j++)
+				for(int k = 0; k < n; k++)
+					add_self(c.mat[i][j], mul(mat[i][k], a.mat[k][j]));
+
+		return c;
+	}
+
+	friend ostream& operator<<(ostream &os, const Matrix& v) { 
+		int n = sz(v.mat), m = sz(v.mat[0]);
+		for(int i = 0; i < n; i++) {
+			os << '['; string sep = "";
+			for(int j = 0; j < m; j++) {
+				os << sep << v.mat[i][j], sep = ", ";
+			}
+			os << "]\n";
 		}
+		return os;
 	}
-	return c;
+};
+
+Matrix power(Matrix b, long long e) {
+	int n = sz(b.mat);
+	Matrix ans(n);
+	rep(i,0,n) ans.mat[i][i] = 1;
+
+	while(e) {
+		if(e&1)
+			ans = ans * b;
+		b = b * b;
+		e >>= 1;
+	}
+
+	return ans;
 }
 
-matrix operator +(matrix a, matrix b){
-	int n = (int)(a.size()), m = (int)(a[0].size());
-	assert(a.size()==b.size() && a[0].size() == b[0].size());
-	matrix c(n, vector<ll>(m));
-	for(int i = 0; i < n; i++){
-		for(int j = 0; j < m; j++){
-			c[i][j] = a[i][j] + b[i][j];
+// General Version
+
+constexpr int mod = 1000000007;
+
+std::mt19937 rng(std::chrono::steady_clock::now().time_since_epoch().count() ^ (long long) (make_unique<char>().get()));
+std::mt19937_64 rng64(std::chrono::steady_clock::now().time_since_epoch().count() ^ (long long) (make_unique<char>().get()));
+
+template<typename T> T rnd(T v) {
+  T k;
+  if constexpr(sizeof(T) <= 32) k = (T) rng(); else k = (T) rng64();
+  return (T) (((k % v) + v) % v);
+}
+
+template<typename T> T rnd(T l, T r) {
+  if (r < l) swap(l, r);
+  return (T) (l + rnd(r - l + 1));
+}
+
+// If no mod is needed just change those functions here
+
+int mul(int a, int b) {
+	return (int)(1ll * a * b % mod);
+}
+
+void add_self(int& a, int b) {
+	a += b;
+	if(a >= mod) a -= mod;
+}
+
+void sub_self(int& a, int b) {
+	a -= b;
+	if(a < 0) a += mod;
+}
+
+struct Matrix
+{
+	vector<vector<int>> mat;
+
+	Matrix(int n) {
+		mat.resize(n, vector<int>(n));
+	}
+
+	Matrix(int n, int m) {
+		mat.resize(n, vector<int>(m));
+	}
+
+	Matrix() {}
+
+	Matrix operator*(const Matrix& a) {
+		int n = sz(mat), m = sz(mat[0]);
+		int n2 = sz(a.mat), m2 = sz(a.mat[0]);
+
+		assert(m == n2);
+
+		Matrix c(n, m2);
+		// static Matrix c;
+		// c.mat.assign(n, vector<int>(m2));
+		
+		for(int i = 0; i < n; i++)
+			for(int j = 0; j < m2; j++)
+				for(int k = 0; k < m; k++)
+					add_self(c.mat[i][j], mul(mat[i][k], a.mat[k][j]));
+
+		return c;
+	}
+
+	friend ostream& operator<<(ostream &os, const Matrix& v) { 
+		int n = sz(v.mat), m = sz(v.mat[0]);
+		rep(i,0,n) {
+			os << '['; string sep = "";
+			rep(j,0,m) {
+				os << sep << v.mat[i][j], sep = ", ";
+			}
+			os << "]\n";
 		}
+		return os;
 	}
-	return c;
-}
 
-matrix operator *(ll v, matrix a){
-	for(auto &i : a)
-		for(auto &j : i)
-			j *= v;
-	return a;
-}
-
-matrix operator -(matrix a, matrix b){
-	return a+(-1*b);
-}
-
-//Without mod
-//matrix operator *(matrix a, matrix b){
-	//int n = (int)a.size(); //# rows of a
-	//int m = (int)b.size(); //# items in each row of a / column of b
-	//int p = (int)b[0].size(); //# columns of b
-	//matrix c(n, vector<ll>(p));
-	//vector<ll> col(m);
-	//for(int j = 0; j < p; j++){ //for every column of b
-		//for(int k = 0; k < m; k++) 
-			//col[k] = b[k][j];
-		//for(int i = 0; i < n; i++){ //multiply by every column in b
-			//ll sum = 0;
-			//for(int k = 0; k < m; k++) //for every item in row i of a, multiply by every item in column j of b
-				//sum += a[i][k]*col[k];
-			//c[i][j] = sum;
-		//}
-	//}
-	//return c;
-//}
-
-matrix identity(int siz){
-	matrix ret(siz, vector<ll>(siz));
-	for(int i = 0; i < siz; i++)
-		ret[i][i] = 1;
-	return ret;
-}
-
-//remember to also import identity for pow
-matrix pow(matrix A, ll p){
-	matrix ret = identity((int)A.size());
-	while(p > 0){
-		if(p&1)
-			ret = ret*A;
-		A = A*A;
-		p >>= 1;
+	void rdm(int n) {
+		for(int i = 0; i < n; i++)
+			for(int j = 0; j < n; j++)
+				mat[i][j] = rnd(1, 1000000000);
 	}
-	return ret;
+
+	void idt(int n) {
+		for(int i = 0; i < n; i++) mat[i][i] = 1;
+	}
+};
+
+Matrix power(Matrix b, long long e) {
+	int n = sz(b.mat);
+	Matrix ans(n);
+	ans.idt(n);
+
+	while(e) {
+		if(e&1)
+			ans = ans * b;
+		b = b * b;
+		e >>= 1;
+	}
+
+	return ans;
 }
 
-//int main(){
-	//matrix a = {{1, 5, 5},{2, 3, 8}}, b = {{13}, {45}, {44}};
-	//for(auto i : a+b){
-		//for(auto j : i)
-			//cout << j << ' ';
-		//cout << endl;
-	//}
-	//cout << endl;
-	//for(auto i : a-b){
-		//for(auto j : i)
-			//cout << j << ' ';
-		//cout << endl;
-	//}
-	//cout << endl;
-	//for(auto i : a*b){
-		//for(auto j : i)
-			//cout << j << ' ';
-		//cout << endl;
-	//}
-	//cout << endl;
-	//for(auto i : 5*b){
-		//for(auto j : i)
-			//cout << j << ' ';
-		//cout << endl;
-	//}
-	//cout << endl;
-	//for(auto i : pow(a,0x3f3f3f3f3f3f3f3f)){
-		//for(auto j : i)
-			//cout << j << ' ';
-		//cout << endl;
-	//}
-	//cout << endl;
-//}
+int main() {
+
+}
