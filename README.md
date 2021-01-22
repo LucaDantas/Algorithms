@@ -15,6 +15,7 @@
 |[Dijkstra](Graph/dijkstra.cpp)|
 |[Topological Sort](Graph/top_sort.cpp)|
 |[Maximum Bipartite Matching O(nm)](Graph/bipartite_matching.cpp)|
+|[Minimum Vertex Cover](Graph/minimum_vertex_cover.cpp)|
 
 |Math|
 |---------------|
