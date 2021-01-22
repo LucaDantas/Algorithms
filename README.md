@@ -14,11 +14,11 @@
 |---------------|
 |[Dijkstra](Graph/dijkstra.cpp)|
 |[Topological Sort](Graph/top_sort.cpp)|
+|[Maximum Bipartite Matching O(nm)](Graph/bipartite_matching.cpp)|
 
 |Math|
 |---------------|
 |[Matrix Operations](Math/matrix.cpp)|
-|[Modular arithmetic](Math/modular_arithmetic.cpp)|
 
 |Geometry|
 |---------------|
