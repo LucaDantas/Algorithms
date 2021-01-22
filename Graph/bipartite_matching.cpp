@@ -15,28 +15,22 @@ int color[maxn], edge_match[maxn];
 
 bool mark[maxn], match[maxn];
 
-int dfs(int u) {
+bool dfs(int u) {
 	mark[u] = 1;
+
 	if(color[u]) {
-		if(match[u]) {
-			int ans = dfs(edge_match[u]);
-			if(!ans) return 0;
-			return 1;
-		}
-		match[u] = 1;
+		if(match[u])
+			return dfs(edge_match[u]);
 		return 1;
 	}
- 
+
 	for(int v : g[u]) {
-		if(mark[v]) continue;
-		int ans = dfs(v);
-		if(!ans) continue;
-		match[u] = 1;
-		edge_match[u] = v;
-		edge_match[v] = u;
+		if(mark[v] || !dfs(v)) continue;
+		match[u] = match[v] = 1;
+		edge_match[u] = v, edge_match[v] = u;
 		return 1;
 	}
- 
+
 	return 0;
 }
 
