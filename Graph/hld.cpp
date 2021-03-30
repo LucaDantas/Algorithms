@@ -1,34 +1,32 @@
 #include <cstdio>
 #include <vector>
 #include <algorithm>
-#include <cassert>
 
 constexpr int maxn = 2e5+10;
 
 std::vector<int> g[maxn];
 
-struct SegmentTree {
-	int tree[4*maxn], n;
-	void upd(int pos, int val) { upd(1, 1, n, pos, val); }
-	void upd(int node, int i, int j, int pos, int val) {
-		if(i == j) return (void)(tree[node] = val);
-		int m = (i+j) >> 1;
-		if(pos <= m) upd(2*node, i, m, pos, val);
-		else upd(2*node+1, m+1, j, pos, val);
-		tree[node] = std::max(tree[2*node], tree[2*node+1]);
-	}
-
-	int query(int l, int r) { return query(1, 1, n, l, r); }
-	int query(int node, int i, int j, int l, int r) {
-		if(i > r || j < l) return 0;
-		if(i >= l && j <= r) return tree[node];
-		int m = (i+j) >> 1;
-		return std::max(query(2*node, i, m, l, r), query(2*node+1, m+1, j, l, r));
-	}
-};
-
 struct HLD
 {
+	struct SegmentTree {
+		int tree[4*maxn], n;
+		void upd(int pos, int val) { upd(1, 1, n, pos, val); }
+		void upd(int node, int i, int j, int pos, int val) {
+			if(i == j) return (void)(tree[node] = val);
+			int m = (i+j) >> 1;
+			if(pos <= m) upd(2*node, i, m, pos, val);
+			else upd(2*node+1, m+1, j, pos, val);
+			tree[node] = std::max(tree[2*node], tree[2*node+1]);
+		}
+
+		int query(int l, int r) { return query(1, 1, n, l, r); }
+		int query(int node, int i, int j, int l, int r) {
+			if(i > r || j < l) return 0;
+			if(i >= l && j <= r) return tree[node];
+			int m = (i+j) >> 1;
+			return std::max(query(2*node, i, m, l, r), query(2*node+1, m+1, j, l, r));
+		}
+	};
 	int pai[maxn], chain[maxn], pos[maxn], sz[maxn], depth[maxn], n, t;
 	SegmentTree seg;
 	void dfsSZ(int u) {
@@ -43,7 +41,7 @@ struct HLD
 	}
 	int lca(int a, int b) {
 		for(; chain[a] != chain[b]; a = pai[chain[a]])
-			if(depth[chain[a]] < depth[chain[b]]) std::swap(a, b); //, printf("l %d %d\n", a, b);
+			if(depth[chain[a]] < depth[chain[b]]) std::swap(a, b);
 		return depth[a] < depth[b] ? a : b;
 	}
 	void dfs(int u) {
