@@ -42,17 +42,17 @@ void fft(vector<C>& a) {
 			a[i + j] += z;
 		}
 }
-vd conv(const vd& a, const vd& b) {
-	if (a.empty() || b.empty()) return {};
-	vd res(sz(a) + sz(b) - 1);
-	int L = 32 - __builtin_clz(sz(res)), n = 1 << L;
-	vector<C> in(n), out(n);
-	copy(all(a), begin(in));
-	rep(i,0,sz(b)) in[i].imag(b[i]);
-	fft(in);
-	for (C& x : in) x *= x;
-	rep(i,0,n) out[i] = in[-i & (n - 1)] - conj(in[i]);
-	fft(out);
-	rep(i,0,sz(res)) res[i] = imag(out[i]) / (4 * n);
-	return res;
-}
+/// vd conv(const vd& a, const vd& b) {
+/// 	if (a.empty() || b.empty()) return {};
+/// 	vd res(sz(a) + sz(b) - 1);
+/// 	int L = 32 - __builtin_clz(sz(res)), n = 1 << L;
+/// 	vector<C> in(n), out(n);
+/// 	copy(all(a), begin(in));
+/// 	rep(i,0,sz(b)) in[i].imag(b[i]);
+/// 	fft(in);
+/// 	for (C& x : in) x *= x;
+/// 	rep(i,0,n) out[i] = in[-i & (n - 1)] - conj(in[i]);
+/// 	fft(out);
+/// 	rep(i,0,sz(res)) res[i] = imag(out[i]) / (4 * n);
+/// 	return res;
+/// }
